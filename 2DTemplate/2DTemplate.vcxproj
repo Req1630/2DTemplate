@@ -118,6 +118,9 @@
     <ClCompile Include="SourceCode\Frame\Frame.cpp" />
     <ClCompile Include="SourceCode\Image\Image.cpp" />
     <ClCompile Include="SourceCode\Main\Main.cpp" />
+    <ClCompile Include="SourceCode\MciSound\MciSound.cpp" />
+    <ClCompile Include="SourceCode\MciSound\MciSoundManager.cpp" />
+    <ClCompile Include="SourceCode\MciSound\MciVolumeManager.cpp" />
     <ClCompile Include="SourceCode\Scene\SceneBase\SceneBase.cpp" />
     <ClCompile Include="SourceCode\Scene\SceneManager\SceneManager.cpp" />
     <ClCompile Include="SourceCode\Scene\Scenes\GameScene\GameScene.cpp" />
@@ -130,6 +133,9 @@
     <ClInclude Include="SourceCode\Global.h" />
     <ClInclude Include="SourceCode\Image\Image.h" />
     <ClInclude Include="SourceCode\Main\Main.h" />
+    <ClInclude Include="SourceCode\MciSound\MciSound.h" />
+    <ClInclude Include="SourceCode\MciSound\MciSoundManager.h" />
+    <ClInclude Include="SourceCode\MciSound\MciVolumeManager.h" />
     <ClInclude Include="SourceCode\Scene\SceneBase\SceneBase.h" />
     <ClInclude Include="SourceCode\Scene\SceneManager\SceneManager.h" />
     <ClInclude Include="SourceCode\Scene\Scenes\GameScene\GameScene.h" />
