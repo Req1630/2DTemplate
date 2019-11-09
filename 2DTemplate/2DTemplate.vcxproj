@@ -76,6 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -117,6 +118,7 @@
   <ItemGroup>
     <ClCompile Include="SourceCode\Frame\Frame.cpp" />
     <ClCompile Include="SourceCode\Image\Image.cpp" />
+    <ClCompile Include="SourceCode\Image\ImageResource.cpp" />
     <ClCompile Include="SourceCode\Main\Main.cpp" />
     <ClCompile Include="SourceCode\MciSound\MciSound.cpp" />
     <ClCompile Include="SourceCode\MciSound\MciSoundManager.cpp" />
@@ -125,13 +127,13 @@
     <ClCompile Include="SourceCode\Scene\SceneManager\SceneManager.cpp" />
     <ClCompile Include="SourceCode\Scene\Scenes\GameScene\GameScene.cpp" />
     <ClCompile Include="SourceCode\Scene\Scenes\TItleScene\TitleScene.cpp" />
-    <ClCompile Include="SourceCode\SingletonBase\SingletonBase.cpp" />
     <ClCompile Include="SourceCode\XInput\XInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceCode\Frame\Frame.h" />
     <ClInclude Include="SourceCode\Global.h" />
     <ClInclude Include="SourceCode\Image\Image.h" />
+    <ClInclude Include="SourceCode\Image\ImageResource.h" />
     <ClInclude Include="SourceCode\Main\Main.h" />
     <ClInclude Include="SourceCode\MciSound\MciSound.h" />
     <ClInclude Include="SourceCode\MciSound\MciSoundManager.h" />

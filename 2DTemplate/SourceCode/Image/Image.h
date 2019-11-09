@@ -1,39 +1,90 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "..\Global.h"
+#include <Windows.h>
 #include "..\SingletonBase\SingletonBase.h"
+#include <string>
 
 //指定色を透過して描画する処理で必要.
 #pragma comment ( lib, "msimg32.lib" )
 
-class CImage : public CSingletonBase<CImage>
+class CImage : public tpl::singleton<CImage>
 {
-	
 public:
+	CImage()
+		: m_hWorkDC			( nullptr )
+		, m_hWorkBMP		( nullptr )
+		, m_hmaskBitmapDC	( nullptr )
+		, m_hmaskBMP		( nullptr )
+	{
+	};
 
-	bool LoadBmp( HBITMAP *hBmp, const char* filename );
+	~CImage()
+	{
+		DeleteObject( m_hmaskBMP );
+		DeleteObject( m_hmaskBitmapDC );
+		DeleteObject( m_hWorkBMP );
+		DeleteObject( m_hWorkDC );
+	};
+
+	static void Create( HDC hDctDc );
+
+	// 画像読み込み関数.
+	static bool LoadBmp( HBITMAP *hBmp, const std::string& filename );
+	static HBITMAP LoadBmp( const std::string& filename );
 
 	//透過表示.
-	void TrnsBlt( HDC hdc,		//DC.
-		int x, int y,			//表示先x, y.
-		int w, int h,			//表示幅, 高さ.
-		HDC hMemDC,				//メモリDC.
-		int bx, int by );		//元画像x, y座標.
+	static void trnsBlt( 
+		HDC hScreenDC,	 // DC.
+		int x,	int y,	 // 表示先x, y座標.
+		int w,	int h,	 // 表示幅, 高さ.
+		HDC hMemDC,		 // 読み込み元DC.
+		int bx, int by );// 元画像x, y座標.
 
 	//半透明表示.
-	void ABlend ( HDC hdc,		//表示先DC.
-		int iDx, int iDy,		//表示先　x, y座標.
-		int iw, int ih,			//表示幅、高さ.
-		HDC hMemDC,				//読み込み元DC.
-		int iSx, int iSy,		//読み込み元 x, y座標.
-		int iAlpha );			//透過値(アルファ値).
+	static void alphaBlt ( 
+		HDC hScreenDC,	// 表示先DC.
+		int x,	int y,	// 表示先x, y座標.
+		int w,	int h,	// 表示幅、高さ.
+		HDC hMemDC,		// 読み込み元DC.
+		int bx,	int by,	// 読み込み元 x, y座標.
+		int iAlpha );	// 透過値(アルファ値).
 
-	void BitsBlt ( HDC hdc,		//表示DC.
-		int x, int y,			//表示先x, y座標.
-		int w, int h,			//表示する高さ.
-		HDC hMemDC,				//バックバッファ(スレッド内で作成).
-		int bx, int by );		//元画像のx. y座標.
+	// 拡縮表示.
+	static void strchBlt( 
+		HDC hScreenDC,	 // 表示先DC.
+		int x, int y,	 // 表示先x, y.
+		int w, int h,	 // 表示幅, 高さ.
+		HDC hMemDC,		 // 読み込み元DC.
+		int bx, int by,	 // 元画像x, y座標.
+		int bw, int bh );// 元画像幅, 高さ.
+
+	// 回転表示.
+	static void plgBlt( 
+		HDC hScreenDC,		// 表示先DC.
+		int cx, int cy,		// 表示先 中心x, y座標.
+		HDC hMemDC,			// 読み込み元DC.
+		int bx, int by,		// 元画像x, y座標.
+		int sx, int sy,		// 元画像幅, 高さ.
+		float fAngle );		// 角度.
+
+	// ビット表示.
+	static void bitBlt ( 
+		HDC hScreenDC,		// 表示先DC.
+		int x, int y,		// 表示先x, y座標.
+		int w, int h,		// 表示幅、高さ.
+		HDC hMemDC,			// 読み込み元DC.
+		int bx, int by );	// 元画像幅, 高さ.
+
+private:
+	void CreatMask( HDC hMemDC, int bx, int by, int sx, int sy );
+
+	HDC		m_hWorkDC;
+	HDC		m_hmaskBitmapDC;
+	HBITMAP m_hWorkBMP;
+	HBITMAP m_hmaskBMP;
+
+	COLORREF oldBkColor;
 };
 
 #endif	// #ifndef IMAGE_H.

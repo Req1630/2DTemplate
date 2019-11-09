@@ -1,30 +1,37 @@
 #ifndef SINGLETON_BASE_H
 #define SINGLETON_BASE_H
 
-#include "..\Global.h"
+#include <memory>
 
-using namespace std;
-
-template <class T>
-class CSingletonBase
+/***********************************
+*	シングルトン基底クラス.
+*/
+namespace tpl
 {
-public:
-	static T* GetInstance() {
-		static unique_ptr<T> pInstance = make_unique<T>();
-		return pInstance.get();
-	}
+	template <class T>
+	class singleton
+	{
+	private:
+		using class_type = T;
 
-protected:
-	// 継承用のコンストラクタ・デストラクタ.
-	CSingletonBase(){};
-	virtual ~CSingletonBase() {}
+	protected:
+		static class_type* GetInstance()
+		{
+			static std::unique_ptr<class_type> pInstance = std::make_unique<class_type>();
+			return pInstance.get();
+		}
 
-private:
-	// コピー・ムーブコンストラクタ, 代入演算子の削除.
-	CSingletonBase( const CSingletonBase & ) = delete;
-	CSingletonBase& operator = ( const CSingletonBase & ) = delete;
-	CSingletonBase( CSingletonBase && ) = delete;
-	CSingletonBase& operator = ( CSingletonBase && ) = delete;
-};
+		singleton() {};
+		virtual ~singleton() {}
+
+
+	private:
+		// コピー・ムーブコンストラクタ, 代入演算子の削除.
+		singleton( const singleton & )				= delete;
+		singleton( singleton && )					= delete;
+		singleton& operator = ( const singleton & )	= delete;
+		singleton& operator = ( singleton && )		= delete;
+	};
+};	// namespace tpl.
 
 #endif	// #ifndef SINGLETON_BASE_H.
