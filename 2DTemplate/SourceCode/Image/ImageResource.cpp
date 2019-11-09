@@ -3,15 +3,18 @@
 #include <crtdbg.h>
 
 CImageResource::CImageResource()
+	: m_hMemDC	( nullptr )
 {
 }
 
 CImageResource::~CImageResource()
 {
+	m_hMemDC = nullptr;
 }
 
-void CImageResource::Load()
+void CImageResource::Load( HDC hMemDC )
 {
+	GetInstance()->m_hMemDC = hMemDC;
 	auto image_search = [&]( const fs::directory_entry& entry )
 	{
 		std::string extension = entry.path().extension().string();
@@ -40,13 +43,16 @@ void CImageResource::Release()
 	}
 }
 
-HBITMAP CImageResource::GetBitmap( const std::string& filename )
+bool CImageResource::SetBitmap( const std::string& filename )
 {
 	auto itr = GetInstance()->m_BitmapList.find(filename);
+
 	if( itr != GetInstance()->m_BitmapList.end() ){
-		return itr->second;
+		SelectObject( GetInstance()->m_hMemDC, itr->second );
+		return true;
 	} else {
 		_ASSERT_EXPR( false, L"BITMAP‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ" );
+		return false;
 	}
-	return nullptr;
+	return false;
 }

@@ -11,6 +11,7 @@ typedef struct _GameWindow{
 	HDC		hScreenDC;	//ÊÞ¯¸ÊÞ¯Ì§.
 	SIZE	size;		//»²½Þ.
 	DWORD	dwFPS;//FPS(Frame Per Second:ÌÚ°Ñ/•b).
+	BOOL	isCloseWnd;
 } GameWindow;
 
 #endif	// #ifndef MAIN_H.

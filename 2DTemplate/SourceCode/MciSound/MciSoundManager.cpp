@@ -54,7 +54,7 @@ void CMciSoundManager::BGMStopCheck()
 	}
 }
 
-void CMciSoundManager::AllClose()
+void CMciSoundManager::Release()
 {
 	for( auto& b : GetInstance()->m_BgmList ){
 		CMciSound::Close( b );

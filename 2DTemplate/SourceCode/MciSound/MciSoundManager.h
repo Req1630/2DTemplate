@@ -26,7 +26,7 @@ public:
 
 	static void Update();
 	static void Load( HWND hWnd );
-	static void AllClose();
+	static void Release();
 
 	static bool PlayBGM( std::string playName );
 	static bool PlaySE( std::string playName );

@@ -1,7 +1,11 @@
 #include "main.h"
 #include "..\Global.h"
-#include "..\Frame\Frame.h"
-#include "..\Scene\SceneManager\SceneManager.h"
+#include "..\Frame\Frame.h"							// フレームクラス.
+#include "..\XInput\XInput.h"						// XInputクラス.
+#include "..\MciSound\MciSoundManager.h"			// MciSoundクラス
+#include "..\Image\Image.h"							// 画像クラス.
+#include "..\Image\ImageResource.h"					// 画像リソースクラス.
+#include "..\Scene\SceneManager\SceneManager.h"		// シーンマネージャークラス.
 #include "..\Scene\Scenes\GameScene\GameScene.h"
 
 //ｽﾚｯﾄﾞ関数.
@@ -13,24 +17,29 @@ DWORD WINAPI ThreadFunc( LPVOID vdParam )
 	gameWnd = (GameWindow*)vdParam;//先頭ｱﾄﾞﾚｽをｷｬｽﾄして移す.
 
 	HDC hMemDC;	//ﾒﾓﾘﾃﾞﾊﾞｲｽｺﾝﾃｷｽﾄ.
+	//ﾒﾓﾘDCの作成.
+	hMemDC = CreateCompatibleDC( nullptr );
+	CImage::Create( gameWnd->hScreenDC );
 
-	// フレームクラス.
-	std::unique_ptr<CFrame> pFrame = std::make_unique<CFrame>();
+	CImageResource::Load( hMemDC );
+	CMciSoundManager::Load( gameWnd->hWnd );
+
+	std::unique_ptr<CFrame> pFrame = std::make_unique<CFrame>();	// フレームクラス.
 	std::shared_ptr<clsSceneManager> pSceneManager = std::make_unique<clsSceneManager>();
-	pSceneManager->Push( std::make_shared<clsGameScene>(pSceneManager) );
+	pSceneManager->Push( std::make_shared<clsGameScene>(pSceneManager) );	// シーンクラス.
 
 	//------------------------------------------------
 	//	起動処理[WM_CREATE].
 	//------------------------------------------------
 
-	//ﾒﾓﾘDCの作成.
-	hMemDC = CreateCompatibleDC( nullptr );
+	
 
 	//ｳｨﾝﾄﾞｳが閉じられるまで無限ﾙｰﾌﾟ.
-	while( IsWindow( gameWnd->hWnd ) )
+	while( !gameWnd->isCloseWnd )
 	{
 		pFrame->Init();
-
+		CXInput::StatsUpdate();
+		CMciSoundManager::Update();
 		//------------------------------------------------
 		//	ｹﾞｰﾑ処理[WM_TIMER].
 		//------------------------------------------------
@@ -48,10 +57,15 @@ DWORD WINAPI ThreadFunc( LPVOID vdParam )
 	//------------------------------------------------
 	//	解放処理[WM_DESTROY].
 	//------------------------------------------------
-
+	CImageResource::Release();
+	CMciSoundManager::Release();
 	pSceneManager->Release();
+	pSceneManager.~shared_ptr();
+	pFrame.~unique_ptr();
 	//ﾒﾓﾘDCの解放.
 	DeleteDC( hMemDC );
+	// スレッド終了通知.
+	ExitThread(0);
 
 	return TRUE;
 }
@@ -71,6 +85,7 @@ LRESULT CALLBACK WindowProc(
 	//	ｽﾚｯﾄﾞ関連.
 	//-------------------------------------
 	static GameWindow gameWnd;//ｹﾞｰﾑｳｨﾝﾄﾞｳ構造体.
+	static HANDLE th;
 	DWORD dwID;		//ｽﾚｯﾄﾞID.
 	HBITMAP hBmp;	//ﾋﾞｯﾄﾏｯﾌﾟﾊﾝﾄﾞﾙ.
 
@@ -121,23 +136,6 @@ LRESULT CALLBACK WindowProc(
 
 		return 0;
 
-	case WM_KEYDOWN://ｷｰが押された.
-					//ｷｰ別の処理.
-		switch( wParam ){
-		case VK_ESCAPE:	//Esc.
-			if( MessageBox( nullptr,
-				"ｹﾞｰﾑを終了しますか？","警告",
-				MB_YESNO ) == IDYES )
-			{
-				//ｳｨﾝﾄﾞｳを破棄する.
-				DestroyWindow( hWnd );
-			}
-			break;
-		}
-
-
-		return 0;
-
 	case WM_PAINT:	//ｳｨﾝﾄﾞｳが更新された時.
 					//描画開始.
 		hdc = BeginPaint( hWnd, &ps );
@@ -153,6 +151,36 @@ LRESULT CALLBACK WindowProc(
 
 					 //描画終了.
 		EndPaint( hWnd, &ps );
+		return 0;
+	case WM_KEYDOWN://ｷｰが押された.
+					//ｷｰ別の処理.
+		switch (wParam) {
+		case VK_ESCAPE:	//Esc.
+			if (MessageBox(nullptr,
+				"ｹﾞｰﾑを終了しますか？", "警告",
+				MB_YESNO) == IDYES)
+			{
+				gameWnd.isCloseWnd = TRUE;
+			}
+			break;
+		}
+		if (!gameWnd.isCloseWnd) break;
+	case WM_CLOSE:
+		DWORD result;
+		gameWnd.isCloseWnd = TRUE;
+		while (1) {
+			//スレッドが終わったかチェック
+			GetExitCodeThread(th, &result);
+			//終わったらハンドルを閉じる。
+			if (STILL_ACTIVE != result) {
+				//closehandleで閉じる。
+				CloseHandle(th);
+				//ループを抜ける。
+				break;
+			}
+		}
+		//ｳｨﾝﾄﾞｳを破棄する.
+		DestroyWindow(hWnd);
 		return 0;
 	}
 
