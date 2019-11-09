@@ -123,6 +123,7 @@
     <ClCompile Include="SourceCode\Scene\Scenes\GameScene\GameScene.cpp" />
     <ClCompile Include="SourceCode\Scene\Scenes\TItleScene\TitleScene.cpp" />
     <ClCompile Include="SourceCode\SingletonBase\SingletonBase.cpp" />
+    <ClCompile Include="SourceCode\XInput\XInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceCode\Frame\Frame.h" />
@@ -134,6 +135,7 @@
     <ClInclude Include="SourceCode\Scene\Scenes\GameScene\GameScene.h" />
     <ClInclude Include="SourceCode\Scene\Scenes\TItleScene\TitleScene.h" />
     <ClInclude Include="SourceCode\SingletonBase\SingletonBase.h" />
+    <ClInclude Include="SourceCode\XInput\XInput.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
