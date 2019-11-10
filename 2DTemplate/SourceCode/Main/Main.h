@@ -6,7 +6,7 @@
 #pragma comment( lib, "winmm.lib" )
 
 //\‘¢‘ÌéŒ¾.
-typedef struct _GameWindow{
+typedef struct _GameWindow {
 	HWND	hWnd;		//³¨İÄŞ³ÊİÄŞÙ.
 	HDC		hScreenDC;	//ÊŞ¯¸ÊŞ¯Ì§.
 	SIZE	size;		//»²½Ş.
