@@ -24,7 +24,7 @@ DWORD WINAPI ThreadFunc( LPVOID vdParam )
 	//------------------------------------------------
 	//ÒÓØDC‚Ìì¬.
 	HDC hMemDC = CreateCompatibleDC( nullptr );
-	CImage::Create( gameWnd->hScreenDC );
+	CImage::Create( gameWnd->hScreenDC, hMemDC );
 
 	CImageResource::Load( hMemDC );
 	CMciSoundManager::Load( gameWnd->hWnd );
@@ -49,10 +49,15 @@ DWORD WINAPI ThreadFunc( LPVOID vdParam )
 		//------------------------------------------------
 		//	•`‰æˆ—[WM_PAINT].
 		//------------------------------------------------
+		CImage::SetBitmap("backGround");
+		CImage::bitBlt( 0, 0, 640, 480, 0, 0 );
+
 		pSceneManager->Draw( gameWnd->hScreenDC, hMemDC );
+
+		CConsoleDebug::SetDraw();
+
 		pFrame->Draw( gameWnd->hScreenDC );
 		pFrame->Update( gameWnd->hWnd );
-		CConsoleDebug::SetDraw();
 	}
 
 	//------------------------------------------------
@@ -60,7 +65,7 @@ DWORD WINAPI ThreadFunc( LPVOID vdParam )
 	//------------------------------------------------
 	CImageResource::Release();
 	CMciSoundManager::Release();
-	CConsoleDebug::ThreadRelease();
+	
 	pSceneManager->Release();
 	pSceneManager.~shared_ptr();
 	pFrame.~unique_ptr();
@@ -156,7 +161,7 @@ LRESULT CALLBACK WindowProc(
 		EndPaint( hWnd, &ps );
 		return 0;
 	case WM_KEYDOWN://·°‚ª‰Ÿ‚³‚ê‚½.
-					//·°•Ê‚Ìˆ—.
+		//·°•Ê‚Ìˆ—.
 		switch (wParam) {
 		case VK_ESCAPE:	//Esc.
 			if (MessageBox(nullptr,
@@ -182,6 +187,8 @@ LRESULT CALLBACK WindowProc(
 				break;
 			}
 		}
+
+		CConsoleDebug::ThreadRelease();
 		//³¨İÄŞ³‚ğ”jŠü‚·‚é.
 		DestroyWindow(hWnd);
 		return 0;

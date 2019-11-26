@@ -21,6 +21,7 @@ public:
 	static void Release();
 
 	static bool SetBitmap( const std::string& filename );
+	static HBITMAP GetBitmap( const std::string& filename );
 
 private:
 	std::unordered_map<std::string, HBITMAP> m_BitmapList;

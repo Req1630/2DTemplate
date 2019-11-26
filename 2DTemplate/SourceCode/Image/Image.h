@@ -12,12 +12,13 @@ class CImage : public tpl::singleton<CImage>
 {
 public:
 	CImage()
-		: m_hWorkDC			( nullptr )
+		: m_hScreenDC		( nullptr )
+		, m_hMemDC			( nullptr )
+		, m_hWorkDC			( nullptr )
 		, m_hWorkBMP		( nullptr )
 		, m_hmaskBitmapDC	( nullptr )
 		, m_hmaskBMP		( nullptr )
-	{
-	};
+	{}
 
 	~CImage()
 	{
@@ -25,59 +26,73 @@ public:
 		DeleteObject( m_hmaskBitmapDC );
 		DeleteObject( m_hWorkBMP );
 		DeleteObject( m_hWorkDC );
-	};
 
-	static void Create( HDC hDctDc );
+		m_hScreenDC = nullptr;
+		m_hMemDC = nullptr;
+	}
+
+	static void Create( HDC hScreenDC, HDC hMemDC );
 
 	// 画像読み込み関数.
-	static bool LoadBmp( HBITMAP *hBmp, const std::string& filename );
+	static bool LoadBmp( HBITMAP *hBmp, const char* filename );
 	static HBITMAP LoadBmp( const std::string& filename );
+
+	static void SetBitmap( const std::string& filename, HBITMAP hBitmap = nullptr );
 
 	//透過表示.
 	static void trnsBlt( 
-		HDC hScreenDC,	 // DC.
-		int x,	int y,	 // 表示先x, y座標.
-		int w,	int h,	 // 表示幅, 高さ.
-		HDC hMemDC,		 // 読み込み元DC.
-		int bx, int by );// 元画像x, y座標.
+		const int& x,	// 表示先x座標.
+		const int& y,	// 表示先y座標.
+		const int& w,	// 表示幅.
+		const int& h,	// 表示高さ.
+		const int& bx,	// 元画像x座標.
+		const int& by );// 元画像y座標.
 
-	//半透明表示.
+						//半透明表示.
 	static void alphaBlt ( 
-		HDC hScreenDC,	// 表示先DC.
-		int x,	int y,	// 表示先x, y座標.
-		int w,	int h,	// 表示幅、高さ.
-		HDC hMemDC,		// 読み込み元DC.
-		int bx,	int by,	// 読み込み元 x, y座標.
-		int iAlpha );	// 透過値(アルファ値).
+		const int& x,			// 表示先x座標.
+		const int& y,			// 表示先y座標.
+		const int& w,			// 表示幅.
+		const int& h,			// 表示高さ.
+		const int& bx,			// 元画像x座標.
+		const int& by,			// 元画像y座標.
+		const int& alpha );		// 透過値(アルファ値).
 
-	// 拡縮表示.
-	static void strchBlt( 
-		HDC hScreenDC,	 // 表示先DC.
-		int x, int y,	 // 表示先x, y.
-		int w, int h,	 // 表示幅, 高さ.
-		HDC hMemDC,		 // 読み込み元DC.
-		int bx, int by,	 // 元画像x, y座標.
-		int bw, int bh );// 元画像幅, 高さ.
+								// 拡縮表示.
+	static void strchBlt(
+		const int& x,	// 表示先x座標.
+		const int& y,	// 表示先y座標.
+		const int& w,	// 表示幅.
+		const int& h,	// 表示高さ.
+		const int& bx,	// 元画像x座標.
+		const int& by,	// 元画像y座標.
+		const int& bw,	// 元画像幅.
+		const int& bh );// 元画像高さ.
 
-	// 回転表示.
-	static void plgBlt( 
-		HDC hScreenDC,		// 表示先DC.
-		int cx, int cy,		// 表示先 中心x, y座標.
-		HDC hMemDC,			// 読み込み元DC.
-		int bx, int by,		// 元画像x, y座標.
-		int sx, int sy,		// 元画像幅, 高さ.
-		float fAngle );		// 角度.
+						// 回転表示.
+	static void plgBlt(
+		const int& cx,			// 表示先 中心x座標.
+		const int& cy,			// 表示先 中心y座標.
+		const int& bx,			// 元画像x座標.
+		const int& by,			// 元画像y座標.
+		const int& bw,			// 元画像幅.
+		const int& bh,			// 元画像高さ.
+		const float& angle );	// 角度.
 
-	// ビット表示.
+								// ビット表示.
 	static void bitBlt ( 
-		HDC hScreenDC,		// 表示先DC.
-		int x, int y,		// 表示先x, y座標.
-		int w, int h,		// 表示幅、高さ.
-		HDC hMemDC,			// 読み込み元DC.
-		int bx, int by );	// 元画像幅, 高さ.
+		const int& x, 		// 表示先x座標.
+		const int& y,		// 表示先y座標.
+		const int& w,		// 表示幅.
+		const int& h,		// 表示高さ.
+		const int& bx, 		// 元画像x座標.
+		const int& by );	// 元画像y座標.
 
 private:
 	void CreatMask( HDC hMemDC, int bx, int by, int sx, int sy );
+
+	HDC m_hScreenDC;
+	HDC m_hMemDC;
 
 	HDC		m_hWorkDC;
 	HDC		m_hmaskBitmapDC;

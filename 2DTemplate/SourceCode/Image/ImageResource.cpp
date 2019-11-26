@@ -56,3 +56,14 @@ bool CImageResource::SetBitmap( const std::string& filename )
 	}
 	return false;
 }
+
+HBITMAP CImageResource::GetBitmap( const std::string& filename )
+{
+	auto itr = GetInstance()->m_BitmapList.find(filename);
+	if( itr != GetInstance()->m_BitmapList.end() ){
+		return itr->second;
+	} else {
+		_ASSERT_EXPR( false, L"BITMAP‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ" );
+	}
+	return nullptr;
+}
