@@ -4,6 +4,24 @@ CXInput::CXInput()
 	: m_State			( FOUR_LIMITED_CONTROLLER )
 	, m_ConnectedCount	( 0 )
 {
+	std::unordered_map<INT, enBUTTON_STATE> inputState;
+	inputState[XINPUT_GAMEPAD_DPAD_UP]			= enNOT_PUSHING;
+	inputState[XINPUT_GAMEPAD_DPAD_DOWN]		= enNOT_PUSHING;
+	inputState[XINPUT_GAMEPAD_DPAD_LEFT]		= enNOT_PUSHING;
+	inputState[XINPUT_GAMEPAD_DPAD_RIGHT]		= enNOT_PUSHING;
+	inputState[XINPUT_GAMEPAD_START]			= enNOT_PUSHING;
+	inputState[XINPUT_GAMEPAD_BACK]				= enNOT_PUSHING;
+	inputState[XINPUT_GAMEPAD_LEFT_THUMB]		= enNOT_PUSHING;
+	inputState[XINPUT_GAMEPAD_RIGHT_THUMB]		= enNOT_PUSHING;
+	inputState[XINPUT_GAMEPAD_LEFT_SHOULDER]	= enNOT_PUSHING;
+	inputState[XINPUT_GAMEPAD_RIGHT_SHOULDER]	= enNOT_PUSHING;
+	inputState[XINPUT_GAMEPAD_A]				= enNOT_PUSHING;
+	inputState[XINPUT_GAMEPAD_B]				= enNOT_PUSHING;
+	inputState[XINPUT_GAMEPAD_X]				= enNOT_PUSHING;
+	inputState[XINPUT_GAMEPAD_Y]				= enNOT_PUSHING;
+	for( int i = 0; i < FOUR_LIMITED_CONTROLLER; i++ ){
+		m_ButtonStateList.emplace_back(inputState);
+	}
 }
 
 CXInput::~CXInput()
@@ -11,8 +29,8 @@ CXInput::~CXInput()
 
 void CXInput::StatsUpdate()
 {
-	GetInstance()->m_ConnectedCount = 0;
-	DWORD dwResult;
+	GetInstance()->m_ConnectedCount = 0;	// 接続数の初期化.
+	DWORD dwResult;	// 接続状態.
 	for( size_t i = 0; i < GetInstance()->m_State.size(); i++ ){
 		dwResult = XInputGetState( i, &GetInstance()->m_State[i] );
 		if( dwResult == ERROR_SUCCESS ){
@@ -24,69 +42,57 @@ void CXInput::StatsUpdate()
 //--------------------------------.
 // ボタン.
 //--------------------------------.
-bool CXInput::A_Button( const int& connectNum )
+CXInput::enBUTTON_STATE CXInput::A_Button( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_A );
+	return GetInstance()->ButtonInputState( connectNum, GetInstance()->m_Button["A"] );
 }
-bool CXInput::B_Button( const int& connectNum )
+CXInput::enBUTTON_STATE CXInput::B_Button( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_B );
+	return GetInstance()->ButtonInputState( connectNum, GetInstance()->m_Button["B"] );
 }
-bool CXInput::X_Button( const int& connectNum )
+CXInput::enBUTTON_STATE CXInput::X_Button( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_X );
+	return GetInstance()->ButtonInputState( connectNum, GetInstance()->m_Button["X"] );
 }
-bool CXInput::Y_Button( const int& connectNum )
+CXInput::enBUTTON_STATE CXInput::Y_Button( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_Y );
+	return GetInstance()->ButtonInputState( connectNum, GetInstance()->m_Button["Y"] );
 }
 
 //--------------------------------.
 // 方向キー.
 //--------------------------------.
-bool CXInput::DPadUp( const int& connectNum, const bool& isKeyinput )
+CXInput::enBUTTON_STATE CXInput::DPadUp( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	if( isKeyinput == true ){
-		return ( GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_DPAD_UP ) ) ||
-			( GetAsyncKeyState(VK_UP) & 0x8000 );
-	} else {
-		return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_DPAD_UP );
-	}
+
+	return GetInstance()->ButtonInputState( connectNum, XINPUT_GAMEPAD_DPAD_UP );
+
 }
-bool CXInput::DPadDown( const int& connectNum, const bool& isKeyinput )
+CXInput::enBUTTON_STATE CXInput::DPadDown( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	if( isKeyinput == true ){
-		return ( GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_DPAD_DOWN ) ) ||
-			( GetAsyncKeyState(VK_DOWN) & 0x8000 );
-	} else {
-		return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_DPAD_DOWN );
-	}
+
+	return GetInstance()->ButtonInputState( connectNum, XINPUT_GAMEPAD_DPAD_DOWN );
+
 }
-bool CXInput::DPadLEFT( const int& connectNum, const bool& isKeyinput )
+CXInput::enBUTTON_STATE CXInput::DPadLEFT( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	if( isKeyinput == true ){
-		return ( GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_DPAD_LEFT ) ) ||
-			( GetAsyncKeyState(VK_LEFT) & 0x8000 );
-	} else {
-		return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_DPAD_LEFT );
-	}
+
+	return GetInstance()->ButtonInputState( connectNum, XINPUT_GAMEPAD_DPAD_LEFT );
+
 }
-bool CXInput::DPadRIGHT( const int& connectNum, const bool& isKeyinput )
+CXInput::enBUTTON_STATE CXInput::DPadRIGHT( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	if( isKeyinput == true ){
-		return ( GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_DPAD_RIGHT ) ) ||
-			( GetAsyncKeyState(VK_RIGHT) & 0x8000 );
-	} else {
-		return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_DPAD_RIGHT );
-	}
+
+	return GetInstance()->ButtonInputState( connectNum, XINPUT_GAMEPAD_DPAD_RIGHT );
+
 }
 
 //--------------------------------.
@@ -119,15 +125,15 @@ SHORT CXInput::RThumbY_Axis( const int& connectNum )
 //--------------------------------.
 // スティックボタン.
 //--------------------------------.
-bool CXInput::LThumb_Button( const int& connectNum )
+CXInput::enBUTTON_STATE CXInput::LThumb_Button( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_LEFT_THUMB );
+	return GetInstance()->ButtonInputState( connectNum, XINPUT_GAMEPAD_LEFT_THUMB );
 }
-bool CXInput::RThumb_Button( const int& connectNum )
+CXInput::enBUTTON_STATE CXInput::RThumb_Button( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_RIGHT_THUMB );
+	return GetInstance()->ButtonInputState( connectNum, XINPUT_GAMEPAD_RIGHT_THUMB );
 }
 
 //--------------------------------.
@@ -147,32 +153,32 @@ INT CXInput::RTrigger( const int& connectNum )
 //--------------------------------.
 // ショルダー.
 //--------------------------------.
-bool CXInput::L_Button( const int& connectNum )
+CXInput::enBUTTON_STATE CXInput::L_Button( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_LEFT_SHOULDER );
+	return GetInstance()->ButtonInputState( connectNum, GetInstance()->m_Button["Left"] );
 }
-bool CXInput::R_Button( const int& connectNum )
+CXInput::enBUTTON_STATE CXInput::R_Button( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_RIGHT_SHOULDER );
+	return GetInstance()->ButtonInputState( connectNum, GetInstance()->m_Button["Right"] );
 }
 
 //--------------------------------.
 // スタート ボタン.
 //--------------------------------.
-bool CXInput::Start_Button( const int& connectNum )
+CXInput::enBUTTON_STATE CXInput::Start_Button( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_START );
+	return GetInstance()->ButtonInputState( connectNum, XINPUT_GAMEPAD_START );
 }
 //--------------------------------.
 // バック ボタン.
 //--------------------------------.
-bool CXInput::Back_Button( const int& connectNum )
+CXInput::enBUTTON_STATE CXInput::Back_Button( const int& connectNum )
 {
 	GetInstance()->ConnectCheck( connectNum );
-	return GetInstance()->IsButtonInput( connectNum, XINPUT_GAMEPAD_BACK );
+	return GetInstance()->ButtonInputState( connectNum, XINPUT_GAMEPAD_BACK );
 }
 
 
@@ -183,7 +189,26 @@ void CXInput::ConnectCheck( const int& connectNum )
 //			"コントローラーの数が足りません", "", MB_OK );
 	}
 }
+
 bool CXInput::IsButtonInput( const int& connectNum, const DWORD& button_mask )
 {
 	return ( GetInstance()->m_State[connectNum].Gamepad.wButtons & button_mask );
+}
+
+CXInput::enBUTTON_STATE CXInput::ButtonInputState( const int& connectNum, const DWORD& button_mask )
+{
+	if( m_ButtonStateList[connectNum][button_mask] == enNOT_PUSHING ||
+		m_ButtonStateList[connectNum][button_mask] == enSEPARATED ){
+		if( IsButtonInput( connectNum, button_mask ) == true ){
+			return m_ButtonStateList[connectNum][button_mask] = enPRESSED_MOMENT;	// 押した瞬間.
+		} else{
+			return m_ButtonStateList[connectNum][button_mask] = enNOT_PUSHING;		// 押してない状態.
+		}
+	} else{
+		if( IsButtonInput( connectNum, button_mask ) == true ){
+			return m_ButtonStateList[connectNum][button_mask] = enPRESS_AND_HOLD;	// 押し続けている状態.
+		} else{
+			return m_ButtonStateList[connectNum][button_mask] = enSEPARATED;		// 押して離した時.
+		}
+	}
 }

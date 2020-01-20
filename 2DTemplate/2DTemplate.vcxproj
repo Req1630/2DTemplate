@@ -130,6 +130,7 @@
     <ClCompile Include="SourceCode\Scene\Scenes\GameScene\GameScene.cpp" />
     <ClCompile Include="SourceCode\Scene\Scenes\TItleScene\TitleScene.cpp" />
     <ClCompile Include="SourceCode\XInput\XInput.cpp" />
+    <ClCompile Include="SourceCode\XInput\XinputConfig.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceCode\ConsoleDebug\ConsoleDebug.h" />
@@ -147,6 +148,7 @@
     <ClInclude Include="SourceCode\Scene\Scenes\TItleScene\TitleScene.h" />
     <ClInclude Include="SourceCode\SingletonBase\SingletonBase.h" />
     <ClInclude Include="SourceCode\XInput\XInput.h" />
+    <ClInclude Include="SourceCode\XInput\XinputConfig.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -51,7 +51,6 @@ DWORD WINAPI ThreadFunc( LPVOID vdParam )
 		//------------------------------------------------
 		CImage::SetBitmap("backGround");
 		CImage::bitBlt( 0, 0, 640, 480, 0, 0 );
-
 		pSceneManager->Draw( gameWnd->hScreenDC, hMemDC );
 
 		CConsoleDebug::SetDraw();
