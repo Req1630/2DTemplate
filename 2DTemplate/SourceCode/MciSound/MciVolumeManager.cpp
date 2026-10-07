@@ -86,9 +86,9 @@ void CMciVolumeManager::VolumeDraw( HDC hDC )
 	
 
 	//FPS‚Ì•\Ž¦.
-	TextOut( hDC, 10, 10, M_Volume.c_str(), M_Volume.length() );
-	TextOut( hDC, 10, 40, B_Volume.c_str(), B_Volume.length() );
-	TextOut( hDC, 10, 70, S_Volume.c_str(), S_Volume.length() );
+	TextOut( hDC, 10, 10, M_Volume.c_str(), static_cast<int>(M_Volume.length()) );
+	TextOut( hDC, 10, 40, B_Volume.c_str(), static_cast<int>(B_Volume.length()) );
+	TextOut( hDC, 10, 70, S_Volume.c_str(), static_cast<int>(S_Volume.length()) );
 
 #endif	// #ifdef _DEBUG.
 }

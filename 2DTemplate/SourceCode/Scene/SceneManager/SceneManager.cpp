@@ -23,7 +23,7 @@ void clsSceneManager::Pop()
 }
 void clsSceneManager::Release()
 {
-	const int STACK_SIZE = m_pScene.size();
+	const int STACK_SIZE = static_cast<int>(m_pScene.size());
 	for( int i = 0; i < STACK_SIZE; i++ ){
 		m_pScene.pop();
 	}

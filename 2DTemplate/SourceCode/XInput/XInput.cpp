@@ -32,7 +32,7 @@ void CXInput::StatsUpdate()
 	GetInstance()->m_ConnectedCount = 0;	// Ú‘±”‚Ì‰Šú‰».
 	DWORD dwResult;	// Ú‘±ó‘Ô.
 	for( size_t i = 0; i < GetInstance()->m_State.size(); i++ ){
-		dwResult = XInputGetState( i, &GetInstance()->m_State[i] );
+		dwResult = XInputGetState( static_cast<DWORD>(i), &GetInstance()->m_State[i] );
 		if( dwResult == ERROR_SUCCESS ){
 			GetInstance()->m_ConnectedCount++;
 		}
